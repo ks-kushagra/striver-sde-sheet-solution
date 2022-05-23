@@ -1,0 +1,90 @@
+For a given integer array/list 'ARR' of size 'N' containing all distinct values, find the total number of 'Inversions' that may exist.
+An inversion is defined for a pair of integers in the array/list when the following two conditions are met.
+A pair ('ARR[i]', 'ARR[j]') is said to be an inversion when:
+
+1. 'ARR[i] > 'ARR[j]' 
+2. 'i' < 'j'
+
+Where 'i' and 'j' denote the indices ranging from [0, 'N').
+Input Format :
+The first line of input contains an integer 'N', denoting the size of the array.
+
+The second line of input contains 'N' integers separated by a single space, denoting the elements of the array 'ARR'.
+Output Format :
+Print a single line containing a single integer that denotes the total count of inversions in the input array.
+Note:
+You are not required to print anything, it has been already taken care of. Just implement the given function.  
+Constraints :
+1 <= N <= 10^5 
+1 <= ARR[i] <= 10^9
+
+Where 'ARR[i]' denotes the array element at 'ith' index.
+
+Time Limit: 1 sec
+Sample Input 1 :
+3
+3 2 1
+Sample Output 1 :
+3
+Explanation Of Sample Output 1:
+We have a total of 3 pairs which satisfy the condition of inversion. (3, 2), (2, 1) and (3, 1).
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#include <bits/stdc++.h> 
+
+long long merge(long long *arr , int l , int m , int u){
+    int la = l ,ua = m , lb = m+1 ,ub = u;
+    vector<int> c;
+    long long inv=0;
+    int i=la,j=lb;
+    while(i<=ua && j<=ub){
+        if(arr[i] <= arr[j]){
+            c.emplace_back(arr[i]);
+            i++;
+        }else{
+            c.emplace_back(arr[j]);
+            inv += (ua -i+1);
+            j++;
+        }
+    }
+    
+    while(i<=ua)
+    {
+        c.emplace_back(arr[i++]);
+    }
+    
+    while(j<=ub){
+        c.emplace_back(arr[j++]);
+    }
+    int t=0;
+    for(int k = la;k<=ua;k++){
+        arr[k]=c[t++];
+    }
+    
+    for(int k=lb;k<=ub;k++){
+        arr[k]=c[t++];
+    }
+    
+    return inv;
+}
+
+long long mergeSort(long long *arr , int l , int u){
+    long long inv=0;
+    
+    if(l<u){
+        int mid = (l+u)/2;
+        
+        inv += mergeSort(arr , l , mid);
+        inv +=mergeSort(arr , mid+1 , u);
+        
+        inv +=merge(arr , l , mid , u);
+    }
+    return inv;
+}
+
+
+
+long long getInversions(long long *arr, int n){
+	return mergeSort(arr , 0 , n-1);
+}
