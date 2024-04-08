@@ -1,0 +1,74 @@
+The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+
+Given an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
+
+Input: n = 4
+Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+Explanation: There exist two distinct solutions to the 4-queens puzzle as shown above
+Example 2:
+
+Input: n = 1
+Output: [["Q"]]
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class Solution {
+public:
+    vector<vector<string>> res;
+    int isPossible(vector<string> chess, int n ,int i , int j){
+        if (i==n || j == n || chess[i][j] == 'Q' ){
+            return 0;
+        }
+
+        //check vertical
+        for (int k = 0; k<=i;k++){
+            if (chess[k][j] == 'Q'){
+                return false;
+            }
+        }
+
+        //check horizontal
+        for (int k = 0; k<=j;k++){
+            if (chess[i][k] == 'Q'){
+                return false;
+            }
+        }
+        
+        // check for left upper diagonal
+        for (int k=i,l=j;k>=0&&l>=0;k--,l--){
+            if (chess[k][l] == 'Q'){
+                return false;
+            }
+        }
+
+        //check for right upper diagonal
+        for (int k =i,l=j; k>=0 && l <n;k--,l++){
+            if (chess[k][l] == 'Q'){
+                return false;
+            }
+        }
+        return true;
+    }
+    void solve(vector<string> chess, int n , int i){
+        if (i == n){
+            res.push_back(chess);
+            return;
+        }
+
+        for (int col = 0;col<n;col++){
+            if (isPossible(chess, n, i, col)){
+                chess[i][col] = 'Q'; // Place Queen
+                solve(chess, n , i+1);
+                chess[i][col] = '.';
+            }
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        string str(n, '.');
+        vector<string> chess(n, str);
+        solve(chess, n,0);
+        return res;
+    }
+};
